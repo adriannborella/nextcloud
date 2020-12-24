@@ -1,0 +1,33 @@
+version: '3'
+services:
+  db:
+    image: postgres:12
+    environment:
+      - POSTGRES_DB=q8_data
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=q8_data
+      - PGDATA=/var/lib/postgresql/data/
+      - TZ=America/Argentina/Buenos_Aires
+    volumes:
+      - ncld01-data_db:/var/lib/postgresql/data/
+    restart: unless-stopped
+  app:
+    image: nextcloud:20.0.4
+    environment:
+      - TZ=America/Argentina/Buenos_Aires
+    ports:
+      - 8181:80
+    links:
+      - db
+    volumes:
+      - ncld01-www_html:/var/www/html
+      - ncld01-apps:/var/www/html/custom_apps
+      - ncld01-config:/var/www/html/config
+      - ncld01-www_data:/var/www/html/data
+    restart: unless-stopped
+volumes:
+  ncld01-www_html:
+  ncld01-apps:
+  ncld01-config:
+  ncld01-www_data:
+  ncld01-data_db:
